@@ -119,6 +119,7 @@ public class Employee {
     public void setLocationId(int locationId) {
         this.locationId = locationId;
     }
+    //
 
     public int getDepartmentId() {
         return departmentId;
