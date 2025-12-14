@@ -1,4 +1,4 @@
-package com.mycompany.personnel.leave.management.system.model;
+package model;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license

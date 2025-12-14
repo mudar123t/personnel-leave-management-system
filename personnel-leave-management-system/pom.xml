@@ -9,6 +9,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
-        <exec.mainClass>com.mycompany.personnel.leave.management.system.PersonnelLeaveManagementSystem</exec.mainClass>
     </properties>
+    <dependencies>
+    <dependency>
+    <groupId>com.microsoft.sqlserver</groupId>
+    <artifactId>mssql-jdbc</artifactId>
+    <version>13.2.1.jre11</version>
+    </dependency>
+    </dependencies>
 </project>
+

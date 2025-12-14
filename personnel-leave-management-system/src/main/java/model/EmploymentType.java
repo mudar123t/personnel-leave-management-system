@@ -2,27 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mycompany.personnel.leave.management.system.model;
+package model;
 
 
-public class LeaveType {
+public class EmploymentType {
 
-    private int leaveTypeId;
+    private int employmentTypeId;
     private String name;
     private String description;
-    private boolean isPaid;
 
-    public LeaveType() {}
+    public EmploymentType() {}
 
-    public LeaveType(int leaveTypeId, String name, String description, boolean isPaid) {
-        this.leaveTypeId = leaveTypeId;
+    public EmploymentType(int employmentTypeId, String name, String description) {
+        this.employmentTypeId = employmentTypeId;
         this.name = name;
         this.description = description;
-        this.isPaid = isPaid;
     }
 
-    public int getLeaveTypeId() { return leaveTypeId; }
-    public void setLeaveTypeId(int leaveTypeId) { this.leaveTypeId = leaveTypeId; }
+    public int getEmploymentTypeId() { return employmentTypeId; }
+    public void setEmploymentTypeId(int employmentTypeId) { this.employmentTypeId = employmentTypeId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -30,12 +28,8 @@ public class LeaveType {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public boolean isPaid() { return isPaid; }
-    public void setPaid(boolean paid) { isPaid = paid; }
-
     @Override
     public String toString() {
         return name;
     }
 }
-

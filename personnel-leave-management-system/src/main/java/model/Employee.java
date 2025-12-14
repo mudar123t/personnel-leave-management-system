@@ -1,4 +1,4 @@
-package com.mycompany.personnel.leave.management.system.model;
+package model;
 
 import java.util.Date;
 
