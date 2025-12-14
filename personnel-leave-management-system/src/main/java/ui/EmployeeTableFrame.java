@@ -57,6 +57,9 @@ public class EmployeeTableFrame extends javax.swing.JFrame {
         JButton btnContact = new JButton("Contact...");
         JButton btnHistory = new JButton("History...");
 
+JButton btnApprovals = new JButton("Leave Approvals...");
+topPanel.add(btnApprovals);
+btnApprovals.addActionListener(e -> openApprovalsForSelectedEmployee());
 
 
 
@@ -98,6 +101,19 @@ public class EmployeeTableFrame extends javax.swing.JFrame {
         getContentPane().setLayout(new BorderLayout(10, 10));
         getContentPane().add(topPanel, BorderLayout.NORTH);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
+    }
+    
+    private void openApprovalsForSelectedEmployee() {
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Select the approver employee first (manager/HR).");
+            return;
+        }
+
+        int modelRow = table.convertRowIndexToModel(row);
+        int approverEmployeeId = (int) model.getValueAt(modelRow, 0);
+
+        new LeaveApprovalFrame(approverEmployeeId).setVisible(true);
     }
 
     private void openAddDialog() {
