@@ -85,4 +85,17 @@ public class PositionDAO {
             ps.executeUpdate();
         }
     }
+    
+    public boolean hasEmployees(int positionId) throws SQLException {
+    String sql = "SELECT 1 FROM dbo.Employee WHERE position_id = ?";
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, positionId);
+        try (ResultSet rs = ps.executeQuery()) {
+            return rs.next();
+        }
+    }
+}
+
 }

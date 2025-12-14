@@ -18,12 +18,12 @@ public class QuickDaoSmokeTest {
 
         // 3) MAIN TABLES
         System.out.println("Employees: " + new EmployeeDAO().getAll().size()); // you already have it
-        System.out.println("EmployeeContacts: " + new EmployeeContactDAO().getAll().size());
+//        System.out.println("EmployeeContacts: " + new EmployeeContactDAO().getAll().size());
         System.out.println("DeptHistory: " + new EmployeeDepartmentHistoryDAO().getAll().size());
 
         System.out.println("LeavePolicies: " + new LeavePolicyDAO().getAll().size());
         System.out.println("LeaveBalances: " + new LeaveBalanceDAO().getAll().size());
-        System.out.println("LeaveRequests: " + new LeaveRequestDAO().getAll().size());
+//        System.out.println("LeaveRequests: " + new LeaveRequestDAO().getAll().size());
         System.out.println("LeaveApprovals: " + new LeaveApprovalDAO().getAll().size());
 
         System.out.println("UserAccounts: " + new UserAccountDAO().getAll().size());

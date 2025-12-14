@@ -54,18 +54,28 @@ public class EmployeeTableFrame extends javax.swing.JFrame {
         btnAdd = new JButton("Add");
         btnEdit = new JButton("Edit");
         btnDelete = new JButton("Delete");
+        JButton btnContact = new JButton("Contact...");
+        JButton btnHistory = new JButton("History...");
+
+
+
 
         btnRefresh.addActionListener(e -> loadEmployees());
         btnAdd.addActionListener(e -> openAddDialog());
         btnEdit.addActionListener(e -> openEditDialog());
         btnDelete.addActionListener(e -> deleteSelectedEmployee());
+        btnContact.addActionListener(e -> openContactDialog());
+        btnHistory.addActionListener(e -> openHistoryFrame());
+        
 
         topPanel.add(btnRefresh);
         topPanel.add(btnAdd);
         topPanel.add(btnEdit);
         topPanel.add(btnDelete);
+        topPanel.add(btnContact);
+        topPanel.add(btnHistory);
 
-
+        btnContact.addActionListener(e -> openContactDialog());
 
         model = new DefaultTableModel(cols, 0) {
             @Override
@@ -83,7 +93,7 @@ public class EmployeeTableFrame extends javax.swing.JFrame {
         btnRefresh = new JButton("Refresh");
         btnRefresh.addActionListener(e -> loadEmployees());
 
-        topPanel.add(btnRefresh);
+      
 
         getContentPane().setLayout(new BorderLayout(10, 10));
         getContentPane().add(topPanel, BorderLayout.NORTH);
@@ -96,6 +106,20 @@ public class EmployeeTableFrame extends javax.swing.JFrame {
     loadEmployees();
 }
 
+    private void openHistoryFrame() {
+    int row = table.getSelectedRow();
+    if (row == -1) {
+        JOptionPane.showMessageDialog(this, "Select an employee first");
+        return;
+    }
+
+    int modelRow = table.convertRowIndexToModel(row);
+    int employeeId = (int) model.getValueAt(modelRow, 0);
+
+    new EmployeeDepartmentHistoryFrame(employeeId).setVisible(true);
+}
+
+    
 private void openEditDialog() {
     int row = table.getSelectedRow();
     if (row == -1) {
@@ -118,26 +142,38 @@ private void deleteSelectedEmployee() {
         return;
     }
 
-    int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to delete this employee?",
-            "Confirm Delete",
-            JOptionPane.YES_NO_OPTION
-    );
-
-    if (confirm != JOptionPane.YES_OPTION) return;
-
     int modelRow = table.convertRowIndexToModel(row);
     int employeeId = (int) model.getValueAt(modelRow, 0);
 
     try {
+        // ✅ Pre-check: block delete before hitting DB delete
+        List<String> blockers = employeeDAO.getEmployeeDeleteBlockers(employeeId);
+        if (!blockers.isEmpty()) {
+            String msg = "Cannot delete this employee because:\n\n- "
+                    + String.join("\n- ", blockers);
+            JOptionPane.showMessageDialog(this, msg, "Delete Blocked", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete this employee?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm != JOptionPane.YES_OPTION) return;
+
         employeeDAO.delete(employeeId);
         loadEmployees();
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(this, ex.getMessage());
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(this, "Database error:\n" + ex.getMessage(),
+                "DB Error", JOptionPane.ERROR_MESSAGE);
         ex.printStackTrace();
     }
 }
+
 
     
     private void loadEmployees() {
@@ -158,7 +194,20 @@ private void deleteSelectedEmployee() {
         ex.printStackTrace();
     }
 }
+    private void openContactDialog() {
+    int row = table.getSelectedRow();
+    if (row == -1) {
+        JOptionPane.showMessageDialog(this, "Select an employee first");
+        return;
+    }
 
+    int modelRow = table.convertRowIndexToModel(row);
+    int employeeId = (int) model.getValueAt(modelRow, 0);
+
+    EmployeeContactDialog dlg = new EmployeeContactDialog(this, employeeId);
+    dlg.setVisible(true);
+}
+    
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
