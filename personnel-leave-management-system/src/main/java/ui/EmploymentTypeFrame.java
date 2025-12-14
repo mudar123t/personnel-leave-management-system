@@ -33,6 +33,7 @@ public class EmploymentTypeFrame extends JFrame {
     }
 
     private void initUI() {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(700, 420);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));

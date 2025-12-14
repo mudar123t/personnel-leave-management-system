@@ -31,8 +31,9 @@ public class DepartmentFrame extends JFrame {
         initUI();
         loadDepartments();
     }
-
+    
     private void initUI() {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(650, 420);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));

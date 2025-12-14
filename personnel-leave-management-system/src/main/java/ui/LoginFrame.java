@@ -5,7 +5,7 @@
 package ui;
 
 import dao.UserAccountDAO;
-import exception.AuthenticationException;
+//import exception.AuthenticationException;
 import model.UserAccount;
 
 import javax.swing.*;
@@ -22,7 +22,7 @@ public class LoginFrame extends javax.swing.JFrame {
      */
     public LoginFrame() {
         initComponents();
-        initComponents1();
+//        initComponents1();
         setLocationRelativeTo(null); // center window
         setupPlaceholders();
 
@@ -77,83 +77,83 @@ public class LoginFrame extends javax.swing.JFrame {
         });
     }
 
-    private void initComponents1() {
+//    private void initComponents1() {
+//
+//        txtUsername = new javax.swing.JTextField();
+//        txtPassword = new javax.swing.JPasswordField();
+//        btnLogin = new javax.swing.JButton();
+//
+//        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+//        setTitle("Login");
+//
+//        btnLogin.setText("Login");
+//        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                btnLoginActionPerformed(evt);
+//            }
+//        });
+//
+//        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+//        getContentPane().setLayout(layout);
+//
+//        layout.setHorizontalGroup(
+//                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//                        .addGroup(layout.createSequentialGroup()
+//                                .addGap(50, 50, 50)
+//                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+//                                        .addComponent(txtUsername)
+//                                        .addComponent(txtPassword)
+//                                        .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+//                                .addContainerGap(50, Short.MAX_VALUE))
+//        );
+//
+//        layout.setVerticalGroup(
+//                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//                        .addGroup(layout.createSequentialGroup()
+//                                .addGap(40, 40, 40)
+//                                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+//                                .addGap(20, 20, 20)
+//                                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+//                                .addGap(30, 30, 30)
+//                                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+//                                .addContainerGap(40, Short.MAX_VALUE))
+//        );
+//
+//        pack();
+//    }
 
-        txtUsername = new javax.swing.JTextField();
-        txtPassword = new javax.swing.JPasswordField();
-        btnLogin = new javax.swing.JButton();
+//    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
+//        login();
+//    }
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Login");
-
-        btnLogin.setText("Login");
-        btnLogin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoginActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(50, 50, 50)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtUsername)
-                                        .addComponent(txtPassword)
-                                        .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
-                                .addContainerGap(50, Short.MAX_VALUE))
-        );
-
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(40, 40, 40)
-                                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(20, 20, 20)
-                                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(30, 30, 30)
-                                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(40, Short.MAX_VALUE))
-        );
-
-        pack();
-    }
-
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
-        login();
-    }
-
-    private void login() {
-        String username = txtUsername.getText().trim();
-        String password = new String(txtPassword.getPassword());
-
-        if (username.isEmpty() || username.equals("Username")
-                || password.isEmpty() || password.equals("Password")) {
-            showError("Username and password are required.");
-            return;
-        }
-
-        try {
-            UserAccountDAO dao = new UserAccountDAO();
-            UserAccount user = dao.authenticate(username, password);
-
-            JOptionPane.showMessageDialog(this, "Welcome " + user.getUsername());
-            this.dispose();
-            // new MainDashboardFrame(user).setVisible(true); // later
-
-        } catch (AuthenticationException ex) {
-            if ("Account inactive".equals(ex.getMessage())) {
-                showError("Account is disabled. Contact admin.");
-            } else {
-                showError("Invalid username or password.");
-            }
-        } catch (SQLException ex) {
-            showError("System unavailable. Please try again later.");
-        }
-    }
+//    private void login() {
+//        String username = txtUsername.getText().trim();
+//        String password = new String(txtPassword.getPassword());
+//
+//        if (username.isEmpty() || username.equals("Username")
+//                || password.isEmpty() || password.equals("Password")) {
+//            showError("Username and password are required.");
+//            return;
+//        }
+//
+//        try {
+//            UserAccountDAO dao = new UserAccountDAO();
+//            UserAccount user = dao.authenticate(username, password);
+//
+//            JOptionPane.showMessageDialog(this, "Welcome " + user.getUsername());
+//            this.dispose();
+//            // new MainDashboardFrame(user).setVisible(true); // later
+//
+//        } catch (AuthenticationException ex) {
+//            if ("Account inactive".equals(ex.getMessage())) {
+//                showError("Account is disabled. Contact admin.");
+//            } else {
+//                showError("Invalid username or password.");
+//            }
+//        } catch (SQLException ex) {
+//            showError("System unavailable. Please try again later.");
+//        }
+//    }
 
     private void showError(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Login Error", JOptionPane.ERROR_MESSAGE);

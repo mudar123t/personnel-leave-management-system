@@ -29,10 +29,12 @@ public class LeaveRequestFrame extends JFrame {
     public LeaveRequestFrame() {
         super("Leave Requests");
         initUI();
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         loadRequests();
     }
 
     private void initUI() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(980, 460);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));

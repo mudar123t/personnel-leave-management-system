@@ -38,6 +38,7 @@ public class LeaveApprovalFrame extends JFrame {
     }
 
     private void initUI() {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1000, 460);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));

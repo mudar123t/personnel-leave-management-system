@@ -41,6 +41,7 @@ public class EmployeeTableFrame extends javax.swing.JFrame {
     }
 
     private void initUI() {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         String[] cols = {
             "ID", "First Name", "Last Name", "National ID",
             "Birth Date", "Gender", "Hire Date", "Salary",

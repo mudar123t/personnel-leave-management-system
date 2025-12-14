@@ -29,10 +29,12 @@ public class LeaveTypeFrame extends JFrame {
     public LeaveTypeFrame() {
         super("Leave Types");
         initUI();
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         loadTypes();
     }
 
     private void initUI() {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(620, 400);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));

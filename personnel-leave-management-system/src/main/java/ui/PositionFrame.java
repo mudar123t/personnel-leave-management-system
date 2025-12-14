@@ -29,10 +29,12 @@ public class PositionFrame extends JFrame {
     public PositionFrame() {
         super("Positions");
         initUI();
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         loadPositions();
     }
 
     private void initUI() {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(700, 420);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
