@@ -1,36 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
-
 public class EmployeeContact {
-
-    private int employeeContactId;
+    private Integer employeeContactId; // nullable for new
     private int employeeId;
+
     private String phone;
     private String email;
     private String address;
     private String emergencyContactName;
     private String emergencyContactPhone;
 
-    public EmployeeContact() {}
-
-    public EmployeeContact(int employeeContactId, int employeeId, String phone,
-                           String email, String address,
-                           String emergencyContactName, String emergencyContactPhone) {
-        this.employeeContactId = employeeContactId;
-        this.employeeId = employeeId;
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
-        this.emergencyContactName = emergencyContactName;
-        this.emergencyContactPhone = emergencyContactPhone;
-    }
-
-    public int getEmployeeContactId() { return employeeContactId; }
-    public void setEmployeeContactId(int employeeContactId) { this.employeeContactId = employeeContactId; }
+    public Integer getEmployeeContactId() { return employeeContactId; }
+    public void setEmployeeContactId(Integer employeeContactId) { this.employeeContactId = employeeContactId; }
 
     public int getEmployeeId() { return employeeId; }
     public void setEmployeeId(int employeeId) { this.employeeId = employeeId; }
@@ -45,12 +26,8 @@ public class EmployeeContact {
     public void setAddress(String address) { this.address = address; }
 
     public String getEmergencyContactName() { return emergencyContactName; }
-    public void setEmergencyContactName(String emergencyContactName) {
-        this.emergencyContactName = emergencyContactName;
-    }
+    public void setEmergencyContactName(String emergencyContactName) { this.emergencyContactName = emergencyContactName; }
 
     public String getEmergencyContactPhone() { return emergencyContactPhone; }
-    public void setEmergencyContactPhone(String emergencyContactPhone) {
-        this.emergencyContactPhone = emergencyContactPhone;
-    }
+    public void setEmergencyContactPhone(String emergencyContactPhone) { this.emergencyContactPhone = emergencyContactPhone; }
 }

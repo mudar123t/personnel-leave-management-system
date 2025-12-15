@@ -71,4 +71,17 @@ public class EmploymentTypeDAO {
             ps.executeUpdate();
         }
     }
+    
+    public boolean hasEmployees(int employmentTypeId) throws SQLException {
+    String sql = "SELECT 1 FROM dbo.Employee WHERE employment_type_id = ?";
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, employmentTypeId);
+        try (ResultSet rs = ps.executeQuery()) {
+            return rs.next();
+        }
+    }
+}
+
 }

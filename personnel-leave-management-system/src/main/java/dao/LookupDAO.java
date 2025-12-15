@@ -41,4 +41,14 @@ public class LookupDAO {
         }
         return list;
     }
+    
+    public List<LookupItem> getLeaveTypes() throws SQLException {
+    return load("SELECT leave_type_id, name FROM dbo.LeaveType ORDER BY name",
+            "leave_type_id", "name");
+}
+public List<LookupItem> getEmployees() throws SQLException {
+    return load("SELECT employee_id, (first_name + ' ' + last_name) AS name FROM dbo.Employee ORDER BY name",
+            "employee_id", "name");
+}
+
 }

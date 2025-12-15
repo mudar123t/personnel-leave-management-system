@@ -11,7 +11,7 @@ public class Employee {
     private Date birthDate;
     private String gender;
     private Date hireDate;
-    private double salary;
+    private Double salary;
     private int locationId;
     private int departmentId;
     private int positionId;
@@ -104,13 +104,9 @@ public class Employee {
         this.hireDate = hireDate;
     }
 
-    public double getSalary() {
-        return salary;
-    }
+    public Double getSalary() { return salary; }
 
-    public void setSalary(double salary) {
-        this.salary = salary;
-    }
+    public void setSalary(Double salary) { this.salary = salary; }
 
     public int getLocationId() {
         return locationId;

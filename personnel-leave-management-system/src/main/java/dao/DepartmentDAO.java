@@ -81,4 +81,44 @@ public class DepartmentDAO {
             ps.executeUpdate();
         }
     }
+    
+    public boolean hasEmployees(int departmentId) throws SQLException {
+    String sql = "SELECT 1 FROM dbo.Employee WHERE department_id = ?";
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, departmentId);
+        try (ResultSet rs = ps.executeQuery()) {
+            return rs.next();
+        }
+    }
+}
+    
+    public boolean hasHistory(int departmentId) throws SQLException {
+    String sql = "SELECT 1 FROM dbo.EmployeeDepartmentHistory WHERE department_id = ?";
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, departmentId);
+        try (ResultSet rs = ps.executeQuery()) {
+            return rs.next();
+        }
+    }
+}
+public boolean canDelete(int departmentId) throws SQLException {
+    return !hasEmployees(departmentId) && !hasHistory(departmentId);
+}
+
+public boolean existsCode(String code) throws SQLException {
+    String sql = "SELECT 1 FROM dbo.Department WHERE code = ?";
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setString(1, code);
+        try (ResultSet rs = ps.executeQuery()) {
+            return rs.next();
+        }
+    }
+}
+
 }
