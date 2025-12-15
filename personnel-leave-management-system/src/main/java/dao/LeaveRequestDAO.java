@@ -87,6 +87,47 @@ public class LeaveRequestDAO {
             throw new SQLException("Insert leave request failed (no generated key).");
         }
     }
+    
+    
+    public List<LeaveRequestRow> getByEmployee(int employeeId) throws SQLException {
+    String sql =
+        "SELECT lr.leave_request_id, lr.employee_id, (e.first_name + ' ' + e.last_name) AS employee_name, " +
+        "       lr.leave_type_id, lt.name AS leave_type_name, lr.request_date, lr.start_date, lr.end_date, " +
+        "       lr.total_days, lr.status, lr.reason, lr.approved_by_employee_id, lr.decision_date " +
+        "FROM dbo.LeaveRequest lr " +
+        "JOIN dbo.Employee e ON e.employee_id = lr.employee_id " +
+        "JOIN dbo.LeaveType lt ON lt.leave_type_id = lr.leave_type_id " +
+        "WHERE lr.employee_id = ? " +
+        "ORDER BY lr.leave_request_id DESC";
+
+    List<LeaveRequestRow> list = new ArrayList<>();
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, employeeId);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                LeaveRequestRow r = new LeaveRequestRow();
+                r.id = rs.getInt("leave_request_id");
+                r.employeeId = rs.getInt("employee_id");
+                r.employeeName = rs.getString("employee_name");
+                r.leaveTypeId = rs.getInt("leave_type_id");
+                r.leaveTypeName = rs.getString("leave_type_name");
+                r.requestDate = rs.getDate("request_date");
+                r.startDate = rs.getDate("start_date");
+                r.endDate = rs.getDate("end_date");
+                r.totalDays = rs.getInt("total_days");
+                r.status = rs.getString("status");
+                r.reason = rs.getString("reason");
+                int ap = rs.getInt("approved_by_employee_id");
+                r.approvedByEmployeeId = rs.wasNull() ? null : ap;
+                r.decisionDate = rs.getDate("decision_date");
+                list.add(r);
+            }
+        }
+    }
+    return list;
+}
+
 
     public void cancel(int leaveRequestId) throws SQLException {
         String sql =
@@ -378,5 +419,26 @@ public class LeaveRequestDAO {
     }
     return list;
 }
+    
+    
+    public int getApprovedDaysForYear(int employeeId, int leaveTypeId, int year) throws SQLException {
+    String sql =
+        "SELECT ISNULL(SUM(total_days), 0) " +
+        "FROM dbo.LeaveRequest " +
+        "WHERE employee_id=? AND leave_type_id=? AND status='Approved' " +
+        "AND YEAR(start_date)=?";
+
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, employeeId);
+        ps.setInt(2, leaveTypeId);
+        ps.setInt(3, year);
+        try (ResultSet rs = ps.executeQuery()) {
+            rs.next();
+            return rs.getInt(1);
+        }
+    }
+}
+
 
 }

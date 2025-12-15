@@ -96,4 +96,44 @@ public class LeavePolicyDAO {
             ps.executeUpdate();
         }
     }
+    
+    public static class PolicyCheckResult {
+    public Integer annualQuotaDays;
+    public Integer maxConsecutiveDays;
+    public Integer minServiceMonthsRequired;
+    public java.sql.Date hireDate;
+}
+
+public PolicyCheckResult getPolicyForEmployee(int employeeId, int leaveTypeId) throws SQLException {
+    String sql =
+        "SELECT lp.annual_quota_days, lp.max_consecutive_days, lp.min_service_months_required, e.hire_date " +
+        "FROM dbo.Employee e " +
+        "JOIN dbo.LeavePolicy lp ON lp.employment_type_id = e.employment_type_id " +
+        "WHERE e.employee_id = ? AND lp.leave_type_id = ?";
+
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, employeeId);
+        ps.setInt(2, leaveTypeId);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (!rs.next()) return null;
+
+            PolicyCheckResult r = new PolicyCheckResult();
+            r.annualQuotaDays = rs.getInt("annual_quota_days");
+            if (rs.wasNull()) r.annualQuotaDays = null;
+
+            int mc = rs.getInt("max_consecutive_days");
+            r.maxConsecutiveDays = rs.wasNull() ? null : mc;
+
+            int ms = rs.getInt("min_service_months_required");
+            r.minServiceMonthsRequired = rs.wasNull() ? null : ms;
+
+            r.hireDate = rs.getDate("hire_date");
+            return r;
+        }
+    }
+}
+
 }

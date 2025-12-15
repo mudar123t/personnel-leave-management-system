@@ -47,6 +47,22 @@ public class EmployeeDAO {
     }
     
     
+    public String getRoleNameForEmployee(int employeeId) throws SQLException {
+    String sql =
+            "SELECT r.role_name " +
+            "FROM dbo.UserAccount ua " +
+            "JOIN dbo.Role r ON r.role_id = ua.role_id " +
+            "WHERE ua.employee_id = ?";
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, employeeId);
+        try (ResultSet rs = ps.executeQuery()) {
+            return rs.next() ? rs.getString(1) : null;
+        }
+    }
+}
+
+    
     public List<Object[]> getAllWithNames() throws SQLException {
     String sql =
         "SELECT e.employee_id, e.first_name, e.last_name, e.national_id, e.birth_date, e.gender, " +

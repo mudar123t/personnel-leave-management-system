@@ -24,7 +24,6 @@ public class LeaveRequestFrame extends JFrame {
     private JButton btnCancelReq = new JButton("Cancel Request");
     private JButton btnRefresh = new JButton("Refresh");
     private JButton btnClose = new JButton("Close");
-    
 
     public LeaveRequestFrame() {
         super("Leave Requests");
@@ -34,26 +33,23 @@ public class LeaveRequestFrame extends JFrame {
     }
 
     private void initUI() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(980, 460);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         add(new JScrollPane(table), BorderLayout.CENTER);
-        
+
         JButton btnHistory = new JButton("Decisions History");
-        
-        
+
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btns.add(btnAdd);
         btns.add(btnCancelReq);
         btns.add(btnRefresh);
-        btns.add(btnClose);
-        
         btns.add(btnHistory);
+        btns.add(btnClose);
+
         btnHistory.addActionListener(e -> new LeaveDecisionHistoryFrame().setVisible(true));
-        
         btnAdd.addActionListener(e -> openAddDialog());
         btnCancelReq.addActionListener(e -> cancelSelected());
         btnRefresh.addActionListener(e -> loadRequests());

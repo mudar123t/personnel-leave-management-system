@@ -1,15 +1,20 @@
 package ui;
 
+import model.AuthenticatedUser;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
+
+    private final AuthenticatedUser user;
 
     private JButton btnEmployees = new JButton("Employees");
     private JButton btnDepartments = new JButton("Departments");
     private JButton btnLocations = new JButton("Locations");
     private JButton btnPositions = new JButton("Positions");
     private JButton btnEmploymentTypes = new JButton("Employment Types");
+    private JButton btnAccountManagement = new JButton("Account Management");
 
     private JButton btnLeaveTypes = new JButton("Leave Types");
     private JButton btnLeaveRequests = new JButton("Leave Requests");
@@ -18,10 +23,14 @@ public class MainFrame extends JFrame {
 
     private JButton btnExit = new JButton("Exit");
 
-    public MainFrame() {
-        super("Personnel Leave Management System");
+    public MainFrame(AuthenticatedUser user) {
+        this.user = user;
+
+        setTitle("Dashboard - " + user.getUsername() + " (" + user.getRoleName() + ")");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         initUI();
+        applyRolePermissions();
     }
 
     private void initUI() {
@@ -39,6 +48,8 @@ public class MainFrame extends JFrame {
 
         grid.add(btnEmployees);
         grid.add(btnDepartments);
+        
+        grid.add(btnAccountManagement);
 
         grid.add(btnLocations);
         grid.add(btnPositions);
@@ -48,9 +59,10 @@ public class MainFrame extends JFrame {
 
         grid.add(btnLeaveRequests);
         grid.add(btnLeaveApprovals);
-
+        
+        
         grid.add(btnLeaveHistory);
-        grid.add(new JLabel("")); // filler
+        grid.add(new JLabel("")); // filler to keep grid even
 
         root.add(grid, BorderLayout.CENTER);
 
@@ -60,47 +72,102 @@ public class MainFrame extends JFrame {
 
         setContentPane(root);
 
-        // actions
+        // Actions
         btnEmployees.addActionListener(e -> new EmployeeTableFrame().setVisible(true));
         btnDepartments.addActionListener(e -> new DepartmentFrame().setVisible(true));
         btnLocations.addActionListener(e -> new LocationFrame().setVisible(true));
         btnPositions.addActionListener(e -> new PositionFrame().setVisible(true));
         btnEmploymentTypes.addActionListener(e -> new EmploymentTypeFrame().setVisible(true));
+        btnAccountManagement.addActionListener(e -> new AccountManagementFrame().setVisible(true));
+
 
         btnLeaveTypes.addActionListener(e -> new LeaveTypeFrame().setVisible(true));
-        btnLeaveRequests.addActionListener(e -> new LeaveRequestFrame().setVisible(true));
-        btnLeaveHistory.addActionListener(e -> new LeaveDecisionHistoryFrame().setVisible(true));
 
+        btnLeaveRequests.addActionListener(e -> openLeaveRequests());
         btnLeaveApprovals.addActionListener(e -> openApprovals());
+        btnLeaveHistory.addActionListener(e -> new LeaveDecisionHistoryFrame().setVisible(true));
 
         btnExit.addActionListener(e -> System.exit(0));
     }
 
-    private void openApprovals() {
-        String input = JOptionPane.showInputDialog(
-                this,
-                "Enter approver employee ID:",
-                "Open Leave Approvals",
-                JOptionPane.QUESTION_MESSAGE
-        );
+    private void applyRolePermissions() {
+        String role = user.getRoleName() == null ? "" : user.getRoleName().trim().toLowerCase();
 
-        if (input == null) return; // cancel
+        boolean isManager = role.equals("manager");
+        boolean isHr = role.equals("hr");
+        boolean isAdmin = role.equals("admin");
+        boolean isEmployee = role.equals("employee");
 
-        input = input.trim();
-        if (!input.matches("\\d+")) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid numeric employee ID.");
+        // Hide all
+        btnEmployees.setVisible(false);
+        btnDepartments.setVisible(false);
+        btnLocations.setVisible(false);
+        btnPositions.setVisible(false);
+        btnEmploymentTypes.setVisible(false);
+        btnAccountManagement.setVisible(isManager);
+        btnLeaveTypes.setVisible(false);
+        btnLeaveRequests.setVisible(false);
+        btnLeaveApprovals.setVisible(false);
+        btnLeaveHistory.setVisible(false);
+        btnAccountManagement.setVisible(false);
+
+        if (isManager) { // ONLY manager
+            btnAccountManagement.setVisible(true);
+        }
+        // Manager/Admin: everything
+        if (isManager || isAdmin) {
+            btnEmployees.setVisible(true);
+            btnDepartments.setVisible(true);
+            btnLocations.setVisible(true);
+            btnPositions.setVisible(true);
+            btnEmploymentTypes.setVisible(true);
+
+            btnLeaveTypes.setVisible(true);
+            btnLeaveRequests.setVisible(true);
+            btnLeaveApprovals.setVisible(true);
+            btnLeaveHistory.setVisible(true);
             return;
         }
 
-        int approverId = Integer.parseInt(input);
-        new LeaveApprovalFrame(approverId).setVisible(true);
+        // HR: employees + approvals + history (+ leave types + requests)
+        if (isHr) {
+            btnEmployees.setVisible(true);
+
+            btnLeaveRequests.setVisible(true);
+            btnLeaveApprovals.setVisible(true);
+            btnLeaveHistory.setVisible(true);
+            btnLeaveTypes.setVisible(true);
+            return;
+        }
+
+        // Employee: only own leave requests
+        if (isEmployee) {
+            btnLeaveRequests.setVisible(true);
+        }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MainFrame().setVisible(true));
+    private void openLeaveRequests() {
+        String role = user.getRoleName() == null ? "" : user.getRoleName().trim().toLowerCase();
+
+        if (role.equals("employee")) {
+            new MyLeaveRequestFrame(user.getEmployeeId()).setVisible(true);
+        } else {
+            new LeaveRequestFrame().setVisible(true);
+        }
+    }
+
+    private void openApprovals() {
+        String role = user.getRoleName() == null ? "" : user.getRoleName().trim().toLowerCase();
+
+        if (role.equals("manager") || role.equals("admin") || role.equals("hr")) {
+            new LeaveApprovalFrame(user.getEmployeeId()).setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "You are not allowed to approve leave requests.");
+        }
     }
 
 
+   
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 

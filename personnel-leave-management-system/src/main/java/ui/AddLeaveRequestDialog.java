@@ -12,12 +12,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import dao.LeavePolicyDAO;
+import dao.LeaveBalanceDAO;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class AddLeaveRequestDialog extends JDialog {
 
     private final LeaveRequestDAO leaveDAO = new LeaveRequestDAO();
     private final LookupDAO lookupDAO = new LookupDAO();
     private final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    private final LeavePolicyDAO policyDAO = new LeavePolicyDAO();
+    private final LeaveBalanceDAO balanceDAO = new LeaveBalanceDAO();
+
 
     private JComboBox<LookupItem> cmbEmployee = new JComboBox<>();
     private JComboBox<LookupItem> cmbLeaveType = new JComboBox<>();
@@ -103,6 +110,19 @@ public class AddLeaveRequestDialog extends JDialog {
         panel.add(comp2, c);
     }
     
+    public void lockEmployee(int employeeId) {
+    ComboBoxModel<model.LookupItem> m = cmbEmployee.getModel();
+    for (int i = 0; i < m.getSize(); i++) {
+        model.LookupItem it = m.getElementAt(i);
+        if (it.getId() == employeeId) {
+            cmbEmployee.setSelectedIndex(i);
+            cmbEmployee.setEnabled(false);
+            return;
+        }
+    }
+}
+
+    
     private void attachAutoRecalc(JTextField field) {
     field.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
         private void update() { SwingUtilities.invokeLater(() -> recalcTotalDays()); }
@@ -166,6 +186,8 @@ public class AddLeaveRequestDialog extends JDialog {
             showErrors(errors);
             return;
         }
+        
+        
 
         LookupItem emp = (LookupItem) cmbEmployee.getSelectedItem();
         LookupItem lt = (LookupItem) cmbLeaveType.getSelectedItem();
@@ -173,7 +195,20 @@ public class AddLeaveRequestDialog extends JDialog {
         java.util.Date s = parseDateStrict(txtStartDate.getText().trim(), "Start date");
         java.util.Date e = parseDateStrict(txtEndDate.getText().trim(), "End date");
         int totalDays = Integer.parseInt(txtTotalDays.getText().trim());
-
+        
+        // POLICY CHECK (before insert)
+        List<String> policyErrors = validateAgainstPolicy(
+                emp.getId(),
+                lt.getId(),
+                new Date(s.getTime()),
+                new Date(e.getTime()),
+                totalDays
+        );
+        if (!policyErrors.isEmpty()) {
+            showErrors(policyErrors); // uses your existing method
+            return; // IMPORTANT: no insert
+        }
+        
         btnSave.setEnabled(false);
         try {
             leaveDAO.insert(
@@ -220,6 +255,65 @@ public class AddLeaveRequestDialog extends JDialog {
         // Reason optional but you can cap it if you want
         return errors;
     }
+
+    
+    private List<String> validateAgainstPolicy(int employeeId, int leaveTypeId,
+                                          Date startDate, Date endDate, int totalDays) {
+    List<String> errs = new ArrayList<>();
+
+    int y1 = startDate.toLocalDate().getYear();
+    int y2 = endDate.toLocalDate().getYear();
+    if (y1 != y2) {
+        errs.add("Leave request cannot span across years. Please split into two requests.");
+        return errs;
+    }
+
+    try {
+        LeavePolicyDAO.PolicyCheckResult policy = policyDAO.getPolicyForEmployee(employeeId, leaveTypeId);
+        if (policy == null) {
+            errs.add("No LeavePolicy found for this employee (employment type) and leave type.");
+            return errs;
+        }
+
+        // 1) Max consecutive
+        if (policy.maxConsecutiveDays != null && totalDays > policy.maxConsecutiveDays) {
+            errs.add("Policy violation: Max consecutive days allowed = " + policy.maxConsecutiveDays +
+                    ", requested = " + totalDays + ".");
+        }
+
+        // 2) Min service months
+        if (policy.minServiceMonthsRequired != null) {
+            LocalDate hire = policy.hireDate.toLocalDate();
+            LocalDate start = startDate.toLocalDate();
+            long months = ChronoUnit.MONTHS.between(hire.withDayOfMonth(1), start.withDayOfMonth(1));
+            if (months < policy.minServiceMonthsRequired) {
+                errs.add("Policy violation: Minimum service required = " + policy.minServiceMonthsRequired +
+                        " months. Your service months = " + months + ".");
+            }
+        }
+
+        // 3) Remaining days check via LeaveBalance (not LeaveRequest sum)
+        // ensure balance row exists for this year (creates using policy quota if missing)
+        balanceDAO.ensureBalanceRowExists(employeeId, leaveTypeId, y1);
+
+        LeaveBalanceDAO.BalanceInfo b = balanceDAO.getBalanceInfo(employeeId, leaveTypeId, y1);
+        if (b == null) {
+            errs.add("Could not read LeaveBalance for this employee/leave type/year.");
+            return errs;
+        }
+
+        if (b.remaining < totalDays) {
+            errs.add("Not enough remaining leave days. Remaining=" + b.remaining +
+                    ", requested=" + totalDays + ".");
+        }
+
+    } catch (SQLException ex) {
+        errs.add("Could not validate policy/balance due to DB error: " + ex.getMessage());
+    }
+
+    return errs;
+}
+
 
     private void showErrors(List<String> errors) {
         String msg = "Please fix the following:\n\n- " + String.join("\n- ", errors);
